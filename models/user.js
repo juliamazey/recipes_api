@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     apiKey: DataTypes.STRING
   }, {});
   User.associate = function(models) {
-    // associations can be defined here
+    User.hasMany(models.UserRecipes);
+    User.belongsToMany(models.Recipes, {through: models.UserRecipes});
   };
   return User;
 };

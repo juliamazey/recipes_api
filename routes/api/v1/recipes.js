@@ -8,36 +8,17 @@ pry = require('pryjs');
 
 // GET recipe by dish type
 router.get('/', function(req, res){
-  var dish_type = req.query.dish_type
-  var search_query = req.query.search_query
-  Recipe.findOne({
-    where:
-      { dish_type: dish_type,
-        search_query: search_query }
-    })
+  getRecipe(req.query.dish_type, req.query.search)
+  .then(function(fetched_recipe){
+    createRecipe(fetched_recipe)
     .then(recipe => {
-      eval(pry.it)
-      if (recipe === null) {
-
-      }
-      else {
-        getRecipe(dish_type, search_query)
-        .then(function(fetched_recipe){
-          createRecipe(fetched_recipe)
-        })
-        .then(recipe => {
-          res.status(200).send(recipe);
-        })
-        .catch(error => {
-          res.setHeader("Content-Type", "application/json");
-          res.status(500).send({ error });
-        })
-      }
+      res.status(200).send(recipe);
     })
-    .catch(error => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(500).send({ error });
-    })
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(400).send({ error });
+  })
 });
 
 function getRecipe(dish_type, search_query) {
@@ -50,17 +31,21 @@ function getRecipe(dish_type, search_query) {
 };
 
 function createRecipe(recipe) {
-  Recipe.create({
-    dish_type: recipe,
-    name: recipe,
-    image: recipe,
-    recipeUrl: recipe,
-    dietLabels: recipe,
-    healthLabels: recipe,
-    ingredientList: recipe,
-    calories: recipe,
-    cookingTime: recipe
+  return new Promise(function(resolve,reject) {
+    created_recipe = Recipe.create({
+      dish_type: recipe.params.dish_type[0],
+      name: recipe.hits[0].recipe.label,
+      image: recipe.hits[0].recipe.image,
+      recipeUrl: recipe.hits[0].recipe.url,
+      dietLabels: recipe.hits[0].recipe.dietLabels,
+      healthLabels: recipe.hits[0].recipe.healthLabels,
+      ingredientList: recipe.hits[0].recipe.ingredientLines,
+      calories: recipe.hits[0].recipe.calories,
+      cookingTime: recipe.hits[0].recipe.totalTime
+    })
+    .then(rec => {resolve(rec)})
+    .catch(() => {})
   })
-}
+};
 
 module.exports = router;

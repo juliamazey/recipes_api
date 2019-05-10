@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      dishType: {
+        type: Sequelize.STRING
+      },
       name: {
         type: Sequelize.STRING
       },

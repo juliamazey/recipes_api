@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     cookingTime: DataTypes.FLOAT
   }, {});
   Recipe.associate = function(models) {
-    // associations can be defined here
+    Recipe.hasMany(models.UserRecipes);
+    Recipe.belongsToMany(models.Users, {through: models.UserRecipes});
   };
   return Recipe;
 };

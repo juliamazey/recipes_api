@@ -4,7 +4,8 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
 
     return queryInterface.bulkInsert('Recipes', [
-      {
+    {
+      id: 1,
       name: 'Chicken Vesuvio',
       image: 'https://www.edamam.com/web-img/e42/e42f9119813e890af34c259785ae1cfb.jpg',
       recipeUrl: 'http://www.seriouseats.com/recipes/2011/12/chicken-vesuvio-recipe.html',
@@ -31,6 +32,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: 2,
       name: 'Pear Sorbet',
       image: 'https://www.edamam.com/web-img/f87/f875badce3d7190104f8ffb1d559ea3e.jpg',
       recipeUrl: 'http://www.lottieanddoof.com/2010/02/pear-sorbet/',
@@ -52,6 +54,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: 3,
       name: 'Chocolate Pie Crust',
       image: 'https://www.edamam.com/web-img/4d9/4d92006b030763f551ce22e97d074555.jpg',
       recipeUrl: 'http://www.seriouseats.com/recipes/2009/11/serious-chocolate-chocolate-pie-crust.html',
@@ -73,6 +76,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: 4,
       name: 'Pandan Wrapped Roast Pork',
       image: 'https://www.edamam.com/web-img/ae4/ae4608a482557f6e8c33881d8436a5db.jpg',
       recipeUrl: 'http://norecipes.com/pandan-wrapped-roast-pork',
@@ -94,6 +98,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: 5,
       name: 'Carrot-Mango Smoothie',
       image: 'https://www.edamam.com/web-img/56a/56a94ccfd84701ca46ad1eae781e8058.jpg',
       recipeUrl: 'http://www.marthastewart.com/318337/carrot-mango-smoothie',
@@ -116,6 +121,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: 6,
       name: 'Celery Remoulade',
       image: 'https://www.edamam.com/web-img/fde/fdead8cb5dc7aade23b352c0efd5da8e.jpg',
       recipeUrl: 'http://www.davidlebovitz.com/2010/04/celery-root-remoulade-celeri-rem/',
@@ -141,6 +147,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: 7,
       name: 'Sushi Rice',
       image: 'https://www.edamam.com/web-img/c81/c81125357d071aa371c860be73f49d29.jpg',
       recipeUrl: 'http://norecipes.com/blog/sushi-rice-recipe/',
@@ -165,6 +172,7 @@ module.exports = {
       updatedAt: new Date()
     },
     {
+      id: 8,
       name: 'Baked Potato Snack',
       image: 'https://www.edamam.com/web-img/633/6330c4b566f8eba34eb1c5a4e66aa43e',
       recipeUrl: 'http://www.marthastewart.com/353269/baked-potato-snack',

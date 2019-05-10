@@ -2,6 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
   const Recipe = sequelize.define('Recipe', {
     name: DataTypes.STRING,
+    dishType: DataTypes.STRING,
     image: DataTypes.STRING,
     recipeUrl: DataTypes.STRING,
     dietLabels: DataTypes.ARRAY(DataTypes.STRING),

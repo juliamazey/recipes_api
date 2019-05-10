@@ -6,8 +6,8 @@ module.exports = (sequelize, DataTypes) => {
     apiKey: DataTypes.STRING
   }, {});
   User.associate = function(models) {
-    User.hasMany(models.UserRecipes);
-    User.belongsToMany(models.Recipes, {through: models.UserRecipes});
+    User.hasMany(models.UserRecipe);
+    User.belongsToMany(models.Recipe, {through: models.UserRecipe});
   };
   return User;
 };

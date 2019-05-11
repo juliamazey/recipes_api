@@ -6,7 +6,7 @@ const emailTaken = { 'email': 'user1@gmail.com', 'password': 'abc', 'password_co
 const badPasswords = { 'email': 'user1@gmail.com', 'password': 'abc', 'password_confirmation': '123' }
 
 describe('api', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     shell.exec('npx sequelize db:create');
     shell.exec('npx sequelize db:migrate:undo:all');
     shell.exec('npx sequelize db:migrate');
@@ -21,7 +21,6 @@ describe('api', () => {
     });
 
     test('should return a recipe object by dish type', () => {
-      shell.exec('npx sequelize db:seed:undo:all');
       return request(app).get('/api/v1/recipes?dish_type=breakfast&search=potato').then(response => {
         expect((response.body.dishType)).toBe('breakfast'),
         expect(response.body.name).toBe('Baked Potato Snack recipes'),
@@ -61,6 +60,36 @@ describe('api', () => {
       return request(app).post('/api/v1/users').send(badPasswords).then(response => {
         expect(response.status).toBe(400);
         expect(response.body.message).toBe('Passwords do not match');
+      });
+    });
+  });
+
+  describe('Test POST /api/v1/recipes/:id path', () => {
+    test('should return a 201 status and a confirmation message', () => {
+      return request(app).post('/api/v1/recipes/8').send({'apiKey': 'key1'}).then(response => {
+        expect(response.status).toBe(201);
+        expect(response.body.message).toBe('Recipe has been saved!');
+      });
+    });
+
+    test('should return a 401 status if invalid API key is given', () => {
+      return request(app).post('/api/v1/recipes/8').send({'apiKey': 'invalid_key'}).then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 401 status if no API key is given', () => {
+      return request(app).post('/api/v1/recipes/8').then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 404 status if the recipe cannot be found', () => {
+      return request(app).post('/api/v1/recipes/999').send({'apiKey': 'key1'}).then(response => {
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe('No recipe found with id 999');
       });
     });
   });

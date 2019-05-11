@@ -37,7 +37,7 @@ router.post('/:id', function(req, res){
   .then(user => {
     if (user == null) {
       res.setHeader("Content-Type", "application/json");
-      res.status(401).send(JSON.stringify("Invalid API key"));
+      res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
     }
     else {
       UserRecipe.findOrCreate({
@@ -51,14 +51,20 @@ router.post('/:id', function(req, res){
         res.status(201).send(JSON.stringify({ message: `Recipe has been saved!`}));
       })
       .catch(error => {
-        res.setHeader("Content-Type", "application/json");
-        res.status(400).send({ error });
+        if (error.name == 'SequelizeForeignKeyConstraintError') {
+          res.setHeader("Content-Type", "application/json");
+          res.status(404).send(JSON.stringify({ message: `No recipe found with id ${req.params.id}`}));
+        }
+        else {
+          res.setHeader("Content-Type", "application/json");
+          res.status(400).send({ error });
+        }
       });
     }
   })
   .catch(error => {
     res.setHeader("Content-Type", "application/json");
-    res.status(400).send({ error });
+    res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
   });
 });
 

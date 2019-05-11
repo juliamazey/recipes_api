@@ -20,7 +20,7 @@ router.post('/', function(req, res) {
         res.status(400).send(JSON.stringify({ message: "Email has been taken" }));
       }
       else {
-        let password = bcrypt.hashSync(req.body.password, 10)
+        var password = bcrypt.hashSync(req.body.password, 10)
         User.create({
           email: req.body.email,
           password: password,
@@ -28,7 +28,7 @@ router.post('/', function(req, res) {
         })
         .then(user => {
           res.setHeader("Content-Type", "application/json");
-          res.status(201).send(JSON.stringify( {api_key: user.api_key} ));
+          res.status(201).send(JSON.stringify( {apiKey: user.apiKey} ));
         })
         .catch(error => {
           res.setHeader("Content-Type", "application/json");

@@ -4,6 +4,7 @@ const app = require('./app');
 const registerUser = { 'email': 'user@email.com', 'password': 'abc', 'password_confirmation': 'abc' }
 const emailTaken = { 'email': 'user1@gmail.com', 'password': 'abc', 'password_confirmation': 'abc' }
 const badPasswords = { 'email': 'user1@gmail.com', 'password': 'abc', 'password_confirmation': '123' }
+const badloginUser = { 'email': 'user100@gmail.com', 'password': 'password'}
 
 describe('api', () => {
   beforeAll(() => {
@@ -90,6 +91,30 @@ describe('api', () => {
       return request(app).post('/api/v1/recipes/999').send({'apiKey': 'key1'}).then(response => {
         expect(response.status).toBe(404);
         expect(response.body.message).toBe('No recipe found with id 999');
+      });
+    });
+  });
+
+  describe('Test POST /api/v1/login path', () => {
+    test('should return a 200 status and an API key', () => {
+      return request(app).post('/api/v1/users').send(registerUser).then(response => {})
+      return request(app).post('/api/v1/login').send(registerUser).then(response => {
+        expect(response.status).toBe(200);
+        expect(typeof response.body.apiKey).toBe('string');
+      });
+    });
+
+    test('should return a 401 status if invalid information provided', () => {
+      return request(app).post('/api/v1/login').send(badloginUser).then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.error).toBe('Invalid username or password');
+      });
+    });
+
+    test('should return a 401 status if missing information', () => {
+      return request(app).post('/api/v1/login').send({'email': 'user@gmail.com'}).then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.error).toBe('You need to send a password and email');
       });
     });
   });

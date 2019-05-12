@@ -180,8 +180,40 @@ describe('api', () => {
       });
     });
   });
-  
-    describe('Test DELETE /api/v1/recipes/:id path', () => {
+
+  describe('Test GET /api/v1/recipes/sort_type path', () => {
+    test('should return a 200 status and recipes sorted alphabetically by dish type', () => {
+      return request(app).get('/api/v1/recipes/sort_type').send(userApiKey).then(response => {
+        expect(response.status).toBe(200);
+        expect(response.body.recipes[0].dishType).toBe('breakfast');
+        expect(response.body.recipes[1].dishType).toBe('dessert');
+        expect(response.body.recipes[3].dishType).toBe('lunch');
+      });
+    });
+
+    test('should return a 401 status if API key is invalid', () => {
+      return request(app).get('/api/v1/recipes/sort_type').send({ 'apiKey': 'invalid_key' }).then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 401 status if API key is not given', () => {
+      return request(app).get('/api/v1/recipes/sort_type').then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 404 status if the user has no recipes saved', () => {
+      return request(app).get('/api/v1/recipes/sort_type').send({ 'apiKey': 'key5' }).then(response => {
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe('No recipes saved');
+      });
+    });
+  });
+
+  describe('Test DELETE /api/v1/recipes/:id path', () => {
     test('should return a 204 status', () => {
       return request(app).delete('/api/v1/recipes/1').send({'apiKey': 'key1'}).then(response => {
         expect(response.status).toBe(204);

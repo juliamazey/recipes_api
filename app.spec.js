@@ -5,6 +5,7 @@ const registerUser = { 'email': 'user@email.com', 'password': 'abc', 'password_c
 const emailTaken = { 'email': 'user1@gmail.com', 'password': 'abc', 'password_confirmation': 'abc' }
 const badPasswords = { 'email': 'user1@gmail.com', 'password': 'abc', 'password_confirmation': '123' }
 const badloginUser = { 'email': 'user100@gmail.com', 'password': 'password'}
+const userApiKey = {'apiKey': 'key1'}
 
 describe('api', () => {
   beforeAll(() => {
@@ -67,7 +68,7 @@ describe('api', () => {
 
   describe('Test POST /api/v1/recipes/:id path', () => {
     test('should return a 201 status and a confirmation message', () => {
-      return request(app).post('/api/v1/recipes/8').send({'apiKey': 'key1'}).then(response => {
+      return request(app).post('/api/v1/recipes/8').send(userApiKey).then(response => {
         expect(response.status).toBe(201);
         expect(response.body.message).toBe('Recipe has been saved!');
       });
@@ -88,7 +89,7 @@ describe('api', () => {
     });
 
     test('should return a 404 status if the recipe cannot be found', () => {
-      return request(app).post('/api/v1/recipes/999').send({'apiKey': 'key1'}).then(response => {
+      return request(app).post('/api/v1/recipes/999').send(userApiKey).then(response => {
         expect(response.status).toBe(404);
         expect(response.body.message).toBe('No recipe found with id 999');
       });
@@ -97,7 +98,6 @@ describe('api', () => {
 
   describe('Test POST /api/v1/login path', () => {
     test('should return a 200 status and an API key', () => {
-      return request(app).post('/api/v1/users').send(registerUser).then(response => {})
       return request(app).post('/api/v1/login').send(registerUser).then(response => {
         expect(response.status).toBe(200);
         expect(typeof response.body.apiKey).toBe('string');
@@ -115,6 +115,37 @@ describe('api', () => {
       return request(app).post('/api/v1/login').send({'email': 'user@gmail.com'}).then(response => {
         expect(response.status).toBe(401);
         expect(response.body.error).toBe('You need to send a password and email');
+      });
+    });
+  });
+
+  describe('Test GET /api/v1/recipes/sort_time path', () => {
+    test('should return a 200 status and recipes sorted by cooking time', () => {
+      return request(app).get('/api/v1/recipes/sort_time').send(userApiKey).then(response => {
+        expect(response.status).toBe(200);
+        expect(response.body.recipes[0].id).toBe(2);
+        expect(response.body.recipes[1].id).toBe(3);
+      });
+    });
+
+    test('should return a 401 status if API key is invalid', () => {
+      return request(app).get('/api/v1/recipes/sort_time').send({ 'apiKey': 'invalid_key' }).then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 401 status if API key is not given', () => {
+      return request(app).get('/api/v1/recipes/sort_time').then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 404 status if the user has no recipes saved', () => {
+      return request(app).get('/api/v1/recipes/sort_time').send({ 'apiKey': 'key5' }).then(response => {
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe('No recipes saved');
       });
     });
   });

@@ -51,18 +51,6 @@ module.exports = {
         RecipeId: 7,
         createdAt: new Date(),
         updatedAt: new Date()
-      },
-      {
-        UserId: 5,
-        RecipeId: 8,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
-        UserId: 5,
-        RecipeId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
       }
     ], {});
   },

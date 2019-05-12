@@ -90,8 +90,8 @@ describe('api', () => {
 
     test('should return a 404 status if the recipe cannot be found', () => {
       return request(app).post('/api/v1/recipes/999').send(userApiKey).then(response => {
-        expect(response.status).toBe(404);
-        expect(response.body.message).toBe('No recipe found with id 999');
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe('Recipe could not be saved');
       });
     });
   });
@@ -107,14 +107,14 @@ describe('api', () => {
     test('should return a 401 status if invalid information provided', () => {
       return request(app).post('/api/v1/login').send(badloginUser).then(response => {
         expect(response.status).toBe(401);
-        expect(response.body.error).toBe('Invalid username or password');
+        expect(response.body.message).toBe('Invalid username or password');
       });
     });
 
     test('should return a 401 status if missing information', () => {
       return request(app).post('/api/v1/login').send({'email': 'user@gmail.com'}).then(response => {
         expect(response.status).toBe(401);
-        expect(response.body.error).toBe('You need to send a password and email');
+        expect(response.body.message).toBe('You need to send a password and email');
       });
     });
   });

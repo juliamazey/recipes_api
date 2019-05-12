@@ -19,19 +19,19 @@ const show = (req, res) => {
           response.status200Object(res, recipe)
         })
         .catch(error => {
-          response.status400Error(res, error)
+          response.statusMessage(res, 400,  error)
         })
       }
       else {
-        response.status400Error(res, "Sorry, we could not find a recipe")
+        response.statusMessage(res, 404, "Sorry, we could not find a recipe")
       }
     })
     .catch(error => {
-      response.status400Error(res, error)
+      response.statusMessage(res, 400,  error)
     })
   }
   else {
-    response.status400Error(res, "You need to add a dish type and recipe name")
+    response.statusMessage(res, 400, "You need to add a dish type and recipe name")
   }
 }
 
@@ -42,8 +42,7 @@ const create = (req, res) => {
   })
   .then(user => {
     if (user == null) {
-      res.setHeader("Content-Type", "application/json");
-      res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+      response.statusMessage(res, 401, "Invalid API key")
     }
     else {
       UserRecipe.findOrCreate({
@@ -53,24 +52,15 @@ const create = (req, res) => {
         }
       })
       .then(userRecipe => {
-        res.setHeader("Content-Type", "application/json");
-        res.status(201).send(JSON.stringify({ message: `Recipe has been saved!`}));
+        response.statusMessage(res, 201, 'Recipe has been saved!')
       })
       .catch(error => {
-        if (error.name == 'SequelizeForeignKeyConstraintError') {
-          res.setHeader("Content-Type", "application/json");
-          res.status(404).send(JSON.stringify({ message: `No recipe found with id ${req.params.id}`}));
-        }
-        else {
-          res.setHeader("Content-Type", "application/json");
-          res.status(400).send({ error });
-        }
+        response.statusMessage(res, 400, 'Recipe could not be saved')
       });
     }
   })
   .catch(error => {
-    res.setHeader("Content-Type", "application/json");
-    res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+    response.statusMessage(res, 401, 'Invalid API key')
   });
 }
 

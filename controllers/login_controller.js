@@ -15,15 +15,15 @@ const create = (req, res) => {
         response.status200Key(res, user.apiKey)
       }
       else {
-        response.status401Invalid(res, "Invalid username or password")
+        response.statusMessage(res, 401, "Invalid username or password")
       }
     })
     .catch(error => {
-      response.status401Invalid(res, "Invalid username or password")
+      response.statusMessage(res, 401, "Invalid username or password")
     })
   }
   else {
-    response.status401Invalid(res, "You need to send a password and email")
+    response.statusMessage(res, 401, "You need to send a password and email")
   }
 };
 

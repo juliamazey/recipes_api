@@ -12,14 +12,9 @@ class SendResponse {
     res.status(200).send(object);
   }
 
-  status401Invalid(res, message) {
+  statusMessage(res, status, message) {
     res.setHeader("Content-Type", "application/json");
-    res.status(401).send(JSON.stringify({error: message}))
-  }
-
-  status400Error(res, message) {
-    res.setHeader("Content-Type", "application/json");
-    res.status(400).send({error: message});
+    res.status(status).send(JSON.stringify({message: message}))
   }
 
 }

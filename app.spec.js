@@ -53,6 +53,7 @@ describe('api', () => {
 
     test('should return a 400 status if username is already taken', () => {
       return request(app).post('/api/v1/users').send(emailTaken).then(response => {
+        console.log(response.status)
         expect(response.status).toBe(400);
         expect(response.body.message).toBe('Email has been taken');
       });
@@ -113,6 +114,7 @@ describe('api', () => {
 
     test('should return a 401 status if missing information', () => {
       return request(app).post('/api/v1/login').send({'email': 'user@gmail.com'}).then(response => {
+        console.log(response)
         expect(response.status).toBe(401);
         expect(response.body.message).toBe('You need to send a password and email');
       });

@@ -1,13 +1,13 @@
 {
   "development": {
-    "username": "juliamarcooteros",
+    "username": "postgres",
     "password": null,
     "database": "recipes_api_development",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
-    "username": "juliamarcooteros",
+    "username": "postgres",
     "password": null,
     "database": "recipes_api_test",
     "host": "127.0.0.1",

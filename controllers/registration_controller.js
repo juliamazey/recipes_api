@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const uuidv4 = require('uuid/v4')
 pry = require('pryjs');
 
+// POST user registration
 const create = (req, res) => {
   if (req.body.password != req.body.password_confirmation) {
     res.setHeader("Content-Type", "application/json");

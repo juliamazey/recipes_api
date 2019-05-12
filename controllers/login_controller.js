@@ -2,6 +2,7 @@ const User = require('../models').User;
 const bcrypt = require('bcrypt');
 pry = require('pryjs');
 
+// POST user login
 const create = (req, res) => {
   if (req.body.email && req.body.password) {
     User.findOne({

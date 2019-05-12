@@ -1,25 +1,35 @@
 const Recipe = require('../models').Recipe;
 const fetch = require('node-fetch');
+const SendResponse = require('../pojos/responses');
+const response = new SendResponse;
+require('dotenv').config();
 pry = require('pryjs');
+
 
 // GET recipe by dish type
 const show = (req, res) => {
   if (req.query.dish_type && req.query.search){
     getRecipe(req.query.dish_type, req.query.search)
     .then(function(fetched_recipe){
-      createRecipe(fetched_recipe)
-      .then(recipe => {
-        res.status(200).send(recipe);
-      });
+      if(fetched_recipe.count > 0){
+        createRecipe(fetched_recipe)
+        .then(recipe => {
+          response.status200Object(res, recipe)
+        })
+        .catch(error => {
+          response.status400Error(res, error)
+        })
+      }
+      else {
+        response.status400Error(res, "Sorry, we could not find a recipe")
+      }
     })
     .catch(error => {
-      res.setHeader("Content-Type", "application/json");
-      res.status(400).send({ error });
+      response.status400Error(res, error)
     })
   }
   else {
-    res.setHeader("Content-Type", "application/json");
-    res.status(400).send({ error: "You need to add a dish type and recipe name" });
+    response.status400Error(res, "You need to add a dish type and recipe name")
   }
 }
 

@@ -4,7 +4,6 @@ const recipesController = require('../../../controllers/recipes_controller')
 const Recipe = require('../../../models').Recipe;
 const User = require('../../../models').User;
 const UserRecipe = require('../../../models').UserRecipe;
-require('dotenv').config();
 pry = require('pryjs');
 
 // GET recipe by dish type

@@ -103,6 +103,101 @@ const destroy = (req, res) => {
   });
 }
 
+// GET sorted recipes
+const index = (req, res) => {
+  User.findOne({
+    where: { apiKey: req.body.apiKey }
+  })
+  .then(user => {
+    if (user == null) {
+      res.setHeader("Content-Type", "application/json");
+      res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+    }
+    else {
+      if (req.params.order == 'sort_time') {
+        Recipe.findAll({
+          include: {
+              model: UserRecipe,
+              where: { 'UserId': user.id },
+              attributes: []
+            },
+          order: ['cookingTime'],
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        })
+        .then(recipes =>{
+          if (recipes.length == 0) {
+            res.setHeader("Content-Type", "application/json");
+            res.status(404).send(JSON.stringify({ message: "No recipes saved" }));
+          }
+          else {
+            res.setHeader("Content-Type", "application/json");
+            res.status(200).send({ recipes });
+          }
+        })
+        .catch(error => {
+          res.setHeader("Content-Type", "application/json");
+          res.status(400).send({ error });
+        });
+      }
+      if (req.params.order == 'sort_calories') {
+        Recipe.findAll({
+          include: {
+              model: UserRecipe,
+              where: { 'UserId': user.id },
+              attributes: []
+            },
+          order: ['calories'],
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        })
+        .then(recipes =>{
+          if (recipes.length == 0) {
+            res.setHeader("Content-Type", "application/json");
+            res.status(404).send(JSON.stringify({ message: "No recipes saved" }));
+          }
+          else {
+            res.setHeader("Content-Type", "application/json");
+            res.status(200).send({ recipes });
+          }
+        })
+        .catch(error => {
+          res.setHeader("Content-Type", "application/json");
+          res.status(400).send({ error });
+        });
+      }
+      if (req.params.order == 'sort_type') {
+        Recipe.findAll({
+          include: {
+              model: UserRecipe,
+              where: { 'UserId': user.id },
+              attributes: []
+            },
+          order: ['dishType'],
+          attributes: { exclude: ['createdAt', 'updatedAt'] }
+        })
+        .then(recipes =>{
+          if (recipes.length == 0) {
+            res.setHeader("Content-Type", "application/json");
+            res.status(404).send(JSON.stringify({ message: "No recipes saved" }));
+          }
+          else {
+            res.setHeader("Content-Type", "application/json");
+            res.status(200).send({ recipes });
+          }
+        })
+        .catch(error => {
+          res.setHeader("Content-Type", "application/json");
+          res.status(400).send({ error });
+        });
+      }
+    }
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+  });
+}
+
+
 // Helper Functions
 function getRecipe(dish_type, search_query) {
   var url = `https://api.edamam.com/search?q=${search_query}&app_id=${process.env.app_id}&app_key=${process.env.app_key}&dish_type=${dish_type}`
@@ -131,4 +226,4 @@ function createRecipe(recipe) {
   })
 };
 
-module.exports = { show, create, destroy };
+module.exports = { show, create, destroy, index };

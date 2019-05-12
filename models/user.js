@@ -1,7 +1,9 @@
 const bcrypt = require('bcrypt');
-const message = 'Invalid username or password'
+const invalid_message = 'Invalid username or password'
 const SendResponse = require('../pojos/responses');
 const response = new SendResponse
+const mail_taken = 'Email has been taken'
+const uuidv4 = require('uuid/v4')
 
 
 'use strict';
@@ -22,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         where: { email: email }
       })
     .then(user =>{ resolve(user) })
-    .catch((error) => { reject(response.statusMessage(res, 401, message))} )
+    .catch((error) => { reject(invalid_message)} )
     })
   };
 
@@ -30,22 +32,56 @@ module.exports = (sequelize, DataTypes) => {
     return bcrypt.compareSync(password, this.password)
   }
 
-  User.userLogin = function (email, password, res) {
+  User.login = function(email, password, res) {
     if (email && password) {
       return new Promise(function(resolve, reject) {
         User.findUser(email)
         .then(user => {
-          user.checkPassword(password) ? resolve(user) : reject(response.statusMessage(res, 401, message))
+          user.checkPassword(password) ? resolve(user) : reject(response.statusMessage(res, 401, invalid_message))
         })
         .catch(error => {
-          response.statusMessage(res, 401, message)
+          response.statusMessage(res, 401, invalid_message)
         })
       })
     }
     else {
-      response.statusMessage(res, 401, "You need to send a password and email")
+      response.statusMessage(res, 401, 'You need to send a password and email')
     }
   }
+
+  User.creation = function(password, res, email){
+    var pass = bcrypt.hashSync(password, 10)
+    user = User.create({
+      email: email,
+      password: pass,
+      apiKey: uuidv4()
+    })
+    return user
+  }
+
+  function checkSamePasswords(password, password_confirmation, res){
+    if (password != password_confirmation) {
+      response.statusMessage(res, 400, 'Passwords do not match')
+    }
+    else {
+      return true
+    }
+  }
+
+  User.registration = function(password, password_confirmation, res, email){
+    checkSamePasswords(password, password_confirmation, res)
+    return new Promise(function(resolve, reject){
+      User.findUser(email)
+      .then(user => {
+        user ? reject(mail_taken) : resolve(User.creation(password, res, email))
+      })
+      .catch(error => {
+        response.statusMessage(res, 401, "You need to send a password and email")
+      })
+
+    })
+  }
+
 
   return User;
 };

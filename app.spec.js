@@ -180,4 +180,33 @@ describe('api', () => {
       });
     });
   });
+  
+    describe('Test DELETE /api/v1/recipes/:id path', () => {
+    test('should return a 204 status', () => {
+      return request(app).delete('/api/v1/recipes/1').send({'apiKey': 'key1'}).then(response => {
+        expect(response.status).toBe(204);
+      });
+    });
+
+    test('should return a 401 status if invalid API key is given', () => {
+      return request(app).delete('/api/v1/recipes/1').send({'apiKey': 'invalid_key'}).then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 401 status if no API key is given', () => {
+      return request(app).delete('/api/v1/recipes/8').then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 404 status if the recipe cannot be found', () => {
+      return request(app).delete('/api/v1/recipes/1').send({'apiKey': 'key1'}).then(response => {
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe('No recipe found with id 1');
+      });
+    });
+  });
 });

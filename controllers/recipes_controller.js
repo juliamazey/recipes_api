@@ -1,5 +1,8 @@
 const Recipe = require('../models').Recipe;
+const User = require('../models').User;
+const UserRecipe = require('../models').UserRecipe;
 const fetch = require('node-fetch');
+require('dotenv').config();
 pry = require('pryjs');
 
 // GET recipe by dish type
@@ -21,6 +24,45 @@ const show = (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.status(400).send({ error: "You need to add a dish type and recipe name" });
   }
+}
+
+// POST to save recipe by id
+const create = (req, res) => {
+  User.findOne({
+    where: { apiKey: req.body.apiKey }
+  })
+  .then(user => {
+    if (user == null) {
+      res.setHeader("Content-Type", "application/json");
+      res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+    }
+    else {
+      UserRecipe.findOrCreate({
+        where: {
+          UserId: user.id,
+          RecipeId: parseInt(req.params.id)
+        }
+      })
+      .then(userRecipe => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(201).send(JSON.stringify({ message: `Recipe has been saved!`}));
+      })
+      .catch(error => {
+        if (error.name == 'SequelizeForeignKeyConstraintError') {
+          res.setHeader("Content-Type", "application/json");
+          res.status(404).send(JSON.stringify({ message: `No recipe found with id ${req.params.id}`}));
+        }
+        else {
+          res.setHeader("Content-Type", "application/json");
+          res.status(400).send({ error });
+        }
+      });
+    }
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+  });
 }
 
 // Helper Functions
@@ -51,4 +93,4 @@ function createRecipe(recipe) {
   })
 };
 
-module.exports = { show };
+module.exports = { show, create };

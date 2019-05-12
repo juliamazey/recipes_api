@@ -16,7 +16,7 @@ const show = (req, res) => {
       if(fetched_recipe.count > 0){
         createRecipe(fetched_recipe)
         .then(recipe => {
-          response.status200Object(res, recipe)
+          response.statusObject(res, 200, recipe)
         })
         .catch(error => {
           response.statusMessage(res, 400,  error)
@@ -71,8 +71,7 @@ const destroy = (req, res) => {
   })
   .then(user => {
     if (user == null) {
-      res.setHeader("Content-Type", "application/json");
-      res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+      response.statusMessage(res, 401, 'Invalid API key')
     }
     else {
       UserRecipe.destroy({
@@ -82,24 +81,20 @@ const destroy = (req, res) => {
         }
       })
       .then(recipe => {
-        if (recipe == 0) {
-          res.setHeader("Content-Type", "application/json");
-          res.status(404).send(JSON.stringify({ message: `No recipe found with id ${req.params.id}`}));
+        if (recipe === 0) {
+          response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`)
         }
         else {
-          res.setHeader("Content-Type", "application/json");
-          res.status(204).send({ recipe });
+          response.status204(res)
         }
       })
       .catch(error => {
-        res.setHeader("Content-Type", "application/json");
-        res.status(404).send(JSON.stringify({ message: "No recipe found" }));
+        response.statusMessage(res, 404, 'No recipe found')
       });
     }
   })
   .catch(error => {
-    res.setHeader("Content-Type", "application/json");
-    res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+    response.statusMessage(res, 401, 'Invalid API key')
   });
 }
 
@@ -110,8 +105,7 @@ const index = (req, res) => {
   })
   .then(user => {
     if (user == null) {
-      res.setHeader("Content-Type", "application/json");
-      res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+      response.statusMessage(res, 401, 'Invalid API key')
     }
     else {
       if (req.params.order == 'sort_time') {
@@ -126,17 +120,14 @@ const index = (req, res) => {
         })
         .then(recipes =>{
           if (recipes.length == 0) {
-            res.setHeader("Content-Type", "application/json");
-            res.status(404).send(JSON.stringify({ message: "No recipes saved" }));
+            response.statusMessage(res, 404, 'No recipes saved')
           }
           else {
-            res.setHeader("Content-Type", "application/json");
-            res.status(200).send({ recipes });
+            response.statusObject(res, 200, recipes)
           }
         })
         .catch(error => {
-          res.setHeader("Content-Type", "application/json");
-          res.status(400).send({ error });
+          response.statusMessage(res, 400, error)
         });
       }
       if (req.params.order == 'sort_calories') {
@@ -151,17 +142,14 @@ const index = (req, res) => {
         })
         .then(recipes =>{
           if (recipes.length == 0) {
-            res.setHeader("Content-Type", "application/json");
-            res.status(404).send(JSON.stringify({ message: "No recipes saved" }));
+            response.statusMessage(res, 404, 'No recipes saved')
           }
           else {
-            res.setHeader("Content-Type", "application/json");
-            res.status(200).send({ recipes });
+            response.statusObject(res, 200, recipes)
           }
         })
         .catch(error => {
-          res.setHeader("Content-Type", "application/json");
-          res.status(400).send({ error });
+          response.statusMessage(res, 400, error)
         });
       }
       if (req.params.order == 'sort_type') {
@@ -176,24 +164,20 @@ const index = (req, res) => {
         })
         .then(recipes =>{
           if (recipes.length == 0) {
-            res.setHeader("Content-Type", "application/json");
-            res.status(404).send(JSON.stringify({ message: "No recipes saved" }));
+            response.statusMessage(res, 404, 'No recipes saved')
           }
           else {
-            res.setHeader("Content-Type", "application/json");
-            res.status(200).send({ recipes });
+            response.statusObject(res, 200, recipes)
           }
         })
         .catch(error => {
-          res.setHeader("Content-Type", "application/json");
-          res.status(400).send({ error });
+          response.statusMessage(res, 400, error)
         });
       }
     }
   })
   .catch(error => {
-    res.setHeader("Content-Type", "application/json");
-    res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+    response.statusMessage(res, 401, 'Invalid API key')
   });
 }
 

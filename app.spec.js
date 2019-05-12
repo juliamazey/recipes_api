@@ -123,8 +123,8 @@ describe('api', () => {
     test('should return a 200 status and recipes sorted by cooking time', () => {
       return request(app).get('/api/v1/recipes/sort_time').send(userApiKey).then(response => {
         expect(response.status).toBe(200);
-        expect(response.body.recipes[0].id).toBe(2);
-        expect(response.body.recipes[1].id).toBe(3);
+        expect(response.body[0].id).toBe(2);
+        expect(response.body[1].id).toBe(3);
       });
     });
 
@@ -154,8 +154,8 @@ describe('api', () => {
     test('should return a 200 status and recipes sorted by cooking calories', () => {
       return request(app).get('/api/v1/recipes/sort_calories').send(userApiKey).then(response => {
         expect(response.status).toBe(200);
-        expect(response.body.recipes[0].calories).toBe(195.359404222222);
-        expect(response.body.recipes[1].calories).toBe(1240.30266666667);
+        expect(response.body[0].calories).toBe(195.359404222222);
+        expect(response.body[1].calories).toBe(1240.30266666667);
       });
     });
 
@@ -185,9 +185,9 @@ describe('api', () => {
     test('should return a 200 status and recipes sorted alphabetically by dish type', () => {
       return request(app).get('/api/v1/recipes/sort_type').send(userApiKey).then(response => {
         expect(response.status).toBe(200);
-        expect(response.body.recipes[0].dishType).toBe('breakfast');
-        expect(response.body.recipes[1].dishType).toBe('dessert');
-        expect(response.body.recipes[3].dishType).toBe('lunch');
+        expect(response.body[0].dishType).toBe('breakfast');
+        expect(response.body[1].dishType).toBe('dessert');
+        expect(response.body[3].dishType).toBe('lunch');
       });
     });
 
@@ -215,7 +215,7 @@ describe('api', () => {
 
   describe('Test DELETE /api/v1/recipes/:id path', () => {
     test('should return a 204 status', () => {
-      return request(app).delete('/api/v1/recipes/1').send({'apiKey': 'key1'}).then(response => {
+      return request(app).delete('/api/v1/recipes/1').send(userApiKey).then(response => {
         expect(response.status).toBe(204);
       });
     });
@@ -235,7 +235,8 @@ describe('api', () => {
     });
 
     test('should return a 404 status if the recipe cannot be found', () => {
-      return request(app).delete('/api/v1/recipes/1').send({'apiKey': 'key1'}).then(response => {
+      return request(app).delete('/api/v1/recipes/1').send(userApiKey).then(response => {
+        console.log(response.body)
         expect(response.status).toBe(404);
         expect(response.body.message).toBe('No recipe found with id 1');
       });

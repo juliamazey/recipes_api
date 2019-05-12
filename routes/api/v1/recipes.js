@@ -9,7 +9,7 @@ router.get('/', recipesController.show);
 router.post('/:id', recipesController.create);
 
 // DELETE recipe by id
-router.delete("/:id", recipesController.destroy);
+router.delete('/:id', recipesController.destroy);
 
 // GET recipes sorted by cooking time
 router.get('/:order', recipesController.index);

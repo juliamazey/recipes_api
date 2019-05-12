@@ -149,4 +149,35 @@ describe('api', () => {
       });
     });
   });
+
+  describe('Test GET /api/v1/recipes/sort_calories path', () => {
+    test('should return a 200 status and recipes sorted by cooking calories', () => {
+      return request(app).get('/api/v1/recipes/sort_calories').send(userApiKey).then(response => {
+        expect(response.status).toBe(200);
+        expect(response.body.recipes[0].calories).toBe(195.359404222222);
+        expect(response.body.recipes[1].calories).toBe(1240.30266666667);
+      });
+    });
+
+    test('should return a 401 status if API key is invalid', () => {
+      return request(app).get('/api/v1/recipes/sort_calories').send({ 'apiKey': 'invalid_key' }).then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 401 status if API key is not given', () => {
+      return request(app).get('/api/v1/recipes/sort_calories').then(response => {
+        expect(response.status).toBe(401);
+        expect(response.body.message).toBe('Invalid API key');
+      });
+    });
+
+    test('should return a 404 status if the user has no recipes saved', () => {
+      return request(app).get('/api/v1/recipes/sort_calories').send({ 'apiKey': 'key5' }).then(response => {
+        expect(response.status).toBe(404);
+        expect(response.body.message).toBe('No recipes saved');
+      });
+    });
+  });
 });

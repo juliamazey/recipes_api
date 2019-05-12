@@ -1,7 +1,6 @@
 const User = require('../models').User;
-pry = require('pryjs');
 const bcrypt = require('bcrypt');
-
+pry = require('pryjs');
 
 const create = (req, res) => {
   if (req.body.email && req.body.password) {
@@ -27,7 +26,7 @@ const create = (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.status(401).send(JSON.stringify({error: "You need to send a password and email"}));
   }
-}
+};
 
 
 module.exports = { create };

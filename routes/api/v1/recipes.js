@@ -107,6 +107,90 @@ router.delete("/:id", function(req, res) {
   });
 });
 
+// GET recipes sorted by cooking time
+router.get('/sort_time', function(req, res){
+  User.findOne({
+    where: { apiKey: req.body.apiKey }
+  })
+  .then(user => {
+    if (user == null) {
+      res.setHeader("Content-Type", "application/json");
+      res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+    }
+    else {
+      Recipe.findAll({
+        include: {
+            model: UserRecipe,
+            where: { 'UserId': user.id },
+            attributes: []
+          },
+        order: ['cookingTime'],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+      })
+      .then(recipes =>{
+        if (recipes.length == 0) {
+          res.setHeader("Content-Type", "application/json");
+          res.status(404).send(JSON.stringify({ message: "No recipes saved" }));
+        }
+        else {
+          res.setHeader("Content-Type", "application/json");
+          res.status(200).send({ recipes });
+        }
+      })
+      .catch(error => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(400).send({ error });
+      })
+    }
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+  });
+});
+
+// GET recipes sorted by number of calories
+router.get('/sort_calories', function(req, res){
+  User.findOne({
+    where: { apiKey: req.body.apiKey }
+  })
+  .then(user => {
+    if (user == null) {
+      res.setHeader("Content-Type", "application/json");
+      res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+    }
+    else {
+      Recipe.findAll({
+        include: {
+            model: UserRecipe,
+            where: { 'UserId': user.id },
+            attributes: []
+          },
+        order: ['calories'],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+      })
+      .then(recipes => {
+        if (recipes.length == 0) {
+          res.setHeader("Content-Type", "application/json");
+          res.status(404).send(JSON.stringify({ message: "No recipes saved" }));
+        }
+        else {
+          res.setHeader("Content-Type", "application/json");
+          res.status(200).send({ recipes });
+        }
+      })
+      .catch(error => {
+        res.setHeader("Content-Type", "application/json");
+        res.status(400).send({ error });
+      })
+    }
+  })
+  .catch(error => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(401).send(JSON.stringify({ message: "Invalid API key" }));
+  });
+});
+
 // Helper Functions
 function getRecipe(dish_type, search_query) {
   var url = `https://api.edamam.com/search?q=${search_query}&app_id=${process.env.app_id}&app_key=${process.env.app_key}&dish_type=${dish_type}`
@@ -116,6 +200,7 @@ function getRecipe(dish_type, search_query) {
   })
   return fetched
 };
+
 
 function createRecipe(recipe) {
   return new Promise(function(resolve,reject) {

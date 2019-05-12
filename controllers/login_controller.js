@@ -1,10 +1,10 @@
 const User = require('../models').User;
 const SendResponse = require('../pojos/responses');
 const response = new SendResponse
-pry = require('pryjs');
 const bcrypt = require('bcrypt');
+pry = require('pryjs');
 
-
+// POST user login
 const create = (req, res) => {
   if (req.body.email && req.body.password) {
     User.findOne({
@@ -25,7 +25,7 @@ const create = (req, res) => {
   else {
     response.status401Invalid(res, "You need to send a password and email")
   }
-}
+};
 
 
 module.exports = { create };

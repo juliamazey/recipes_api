@@ -43,29 +43,6 @@ describe('api', () => {
     });
   });
 
-  describe('Test POST /api/v1/registration path', () => {
-    test('should return a 201 status and an API key', () => {
-      return request(app).post('/api/v1/users').send(registerUser).then(response => {
-        expect(response.status).toBe(201);
-        expect(typeof response.body.apiKey).toBe('string');
-      });
-    });
-
-    test('should return a 400 status if username is already taken', () => {
-      return request(app).post('/api/v1/users').send(emailTaken).then(response => {
-        expect(response.status).toBe(400);
-        expect(response.body.message).toBe('Email has been taken');
-      });
-    });
-
-    test('should return a 400 status if password is not confirmed', () => {
-      return request(app).post('/api/v1/users').send(badPasswords).then(response => {
-        expect(response.status).toBe(400);
-        expect(response.body.message).toBe('Passwords do not match');
-      });
-    });
-  });
-
   describe('Test POST /api/v1/recipes/:id path', () => {
     test('should return a 201 status and a confirmation message', () => {
       return request(app).post('/api/v1/recipes/8').send(userApiKey).then(response => {
@@ -92,6 +69,29 @@ describe('api', () => {
       return request(app).post('/api/v1/recipes/999').send(userApiKey).then(response => {
         expect(response.status).toBe(400);
         expect(response.body.message).toBe('Recipe could not be saved');
+      });
+    });
+  });
+
+  describe('Test POST /api/v1/registration path', () => {
+    test('should return a 201 status and an API key', () => {
+      return request(app).post('/api/v1/users').send(registerUser).then(response => {
+        expect(response.status).toBe(201);
+        expect(typeof response.body.apiKey).toBe('string');
+      });
+    });
+
+    test('should return a 400 status if username is already taken', () => {
+      return request(app).post('/api/v1/users').send(emailTaken).then(response => {
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe('Email has been taken');
+      });
+    });
+
+    test('should return a 400 status if password is not confirmed', () => {
+      return request(app).post('/api/v1/users').send(badPasswords).then(response => {
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe('Passwords do not match');
       });
     });
   });

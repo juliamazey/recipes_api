@@ -76,25 +76,20 @@ module.exports = (sequelize, DataTypes) => {
     return user
   }
 
-  function checkSamePasswords(password, password_confirmation, res){
-    if (password != password_confirmation) {
-      response.statusMessage(res, 400, 'Passwords do not match')
-    }
-    else {
-      return true
-    }
-  }
-
   User.registration = function(password, password_confirmation, res, email){
-    checkSamePasswords(password, password_confirmation, res);
     return new Promise(function(resolve, reject){
-      User.findUserEmail(email)
-      .then(user => {
-        user ? reject(mail_taken) : resolve(User.creation(password, res, email));
-      })
-      .catch(error => {
-        response.statusMessage(res, 401, "You need to send a password and email");
-      });
+      if (password != password_confirmation) {
+        response.statusMessage(res, 400, 'Passwords do not match')
+      }
+      else {
+        return User.findUserEmail(email)
+        .then(user => {
+          user ? reject(mail_taken) : resolve(User.creation(password, res, email));
+        })
+        .catch(error => {
+          response.statusMessage(res, 401, 'You need to send a password and email');
+        });
+      }
     });
   };
   return User;

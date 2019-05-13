@@ -33,7 +33,14 @@ module.exports = (sequelize, DataTypes) => {
       User.findOne({
         where: { apiKey: apiKey }
       })
-    .then(user =>{ resolve(user) })
+    .then(user =>{
+      if (user == null) {
+        response.statusMessage(res, 401, 'Invalid API key')
+      }
+      else {
+        resolve(user)
+      }
+    })
     .catch((error) => { reject(invalid_message)} )
     })
   };

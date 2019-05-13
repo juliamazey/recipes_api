@@ -22,12 +22,7 @@ const show = (req, res) => {
 const create = (req, res) => {
   User.findUserApiKey(req.body.apiKey)
   .then(user => {
-    if (user == null) {
-      response.statusMessage(res, 401, "Invalid API key")
-    }
-    else {
-      UserRecipe.saveById(user.id, req.params.id, res)
-    }
+    UserRecipe.saveById(user.id, req.params.id, res)
   })
   .catch(error => {
     response.statusMessage(res, 401, 'Invalid API key')
@@ -38,28 +33,23 @@ const create = (req, res) => {
 const destroy = (req, res) => {
   User.findUserApiKey(req.body.apiKey)
   .then(user => {
-    if (user == null) {
-      response.statusMessage(res, 401, 'Invalid API key')
-    }
-    else {
-      UserRecipe.destroy({
-        where: {
-          UserId: user.id,
-          RecipeId: req.params.id
-        }
-      })
-      .then(recipe => {
-        if (recipe === 0) {
-          response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`)
-        }
-        else {
-          response.status204(res)
-        }
-      })
-      .catch(error => {
-        response.statusMessage(res, 404, 'No recipe found')
-      });
-    }
+    UserRecipe.destroy({
+      where: {
+        UserId: user.id,
+        RecipeId: req.params.id
+      }
+    })
+    .then(recipe => {
+      if (recipe === 0) {
+        response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`)
+      }
+      else {
+        response.status204(res)
+      }
+    })
+    .catch(error => {
+      response.statusMessage(res, 404, 'No recipe found')
+    });
   })
   .catch(error => {
     response.statusMessage(res, 401, 'Invalid API key')
@@ -70,19 +60,14 @@ const destroy = (req, res) => {
 const index = (req, res) => {
   User.findUserApiKey(req.body.apiKey)
   .then(user => {
-    if (user == null) {
-      response.statusMessage(res, 401, 'Invalid API key')
+    if (req.params.order == 'sort_time') {
+      Recipe.sortBy('cookingTime', user.id, res)
     }
-    else {
-      if (req.params.order == 'sort_time') {
-        Recipe.sortBy('cookingTime', user.id, res)
-      }
-      if (req.params.order == 'sort_calories') {
-        Recipe.sortBy('calories', user.id, res)
-      }
-      if (req.params.order == 'sort_type') {
-        Recipe.sortBy('dishType', user.id, res)
-      }
+    if (req.params.order == 'sort_calories') {
+      Recipe.sortBy('calories', user.id, res)
+    }
+    if (req.params.order == 'sort_type') {
+      Recipe.sortBy('dishType', user.id, res)
     }
   })
   .catch(error => {

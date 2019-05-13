@@ -23,8 +23,8 @@ module.exports = (sequelize, DataTypes) => {
       User.findOne({
         where: { email: email }
       })
-    .then(user =>{ resolve(user) })
-    .catch((error) => { reject(invalid_message)} )
+      .then(user =>{ resolve(user) })
+      .catch((error) => { reject(invalid_message)} )
     })
   };
 

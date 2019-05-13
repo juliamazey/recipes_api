@@ -109,70 +109,13 @@ const index = (req, res) => {
     }
     else {
       if (req.params.order == 'sort_time') {
-        Recipe.findAll({
-          include: {
-              model: UserRecipe,
-              where: { 'UserId': user.id },
-              attributes: []
-            },
-          order: ['cookingTime'],
-          attributes: { exclude: ['createdAt', 'updatedAt'] }
-        })
-        .then(recipes =>{
-          if (recipes.length == 0) {
-            response.statusMessage(res, 404, 'No recipes saved')
-          }
-          else {
-            response.statusObject(res, 200, recipes)
-          }
-        })
-        .catch(error => {
-          response.statusMessage(res, 400, error)
-        });
+        Recipe.sortBy('cookingTime', user.id, res)
       }
       if (req.params.order == 'sort_calories') {
-        Recipe.findAll({
-          include: {
-              model: UserRecipe,
-              where: { 'UserId': user.id },
-              attributes: []
-            },
-          order: ['calories'],
-          attributes: { exclude: ['createdAt', 'updatedAt'] }
-        })
-        .then(recipes =>{
-          if (recipes.length == 0) {
-            response.statusMessage(res, 404, 'No recipes saved')
-          }
-          else {
-            response.statusObject(res, 200, recipes)
-          }
-        })
-        .catch(error => {
-          response.statusMessage(res, 400, error)
-        });
+        Recipe.sortBy('calories', user.id, res)
       }
       if (req.params.order == 'sort_type') {
-        Recipe.findAll({
-          include: {
-              model: UserRecipe,
-              where: { 'UserId': user.id },
-              attributes: []
-            },
-          order: ['dishType'],
-          attributes: { exclude: ['createdAt', 'updatedAt'] }
-        })
-        .then(recipes =>{
-          if (recipes.length == 0) {
-            response.statusMessage(res, 404, 'No recipes saved')
-          }
-          else {
-            response.statusObject(res, 200, recipes)
-          }
-        })
-        .catch(error => {
-          response.statusMessage(res, 400, error)
-        });
+        Recipe.sortBy('dishType', user.id, res)
       }
     }
   })

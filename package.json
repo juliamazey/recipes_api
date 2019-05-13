@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "npx nyc jest --forceExit"
+    "test": "npx nyc jest --forceExit --runInBand"
   },
   "dependencies": {
     "bcrypt": "^3.0.6",

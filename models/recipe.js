@@ -24,28 +24,26 @@ module.exports = (sequelize, DataTypes) => {
 
   Recipe.sortBy = function(order, id, res){
     const UserRecipe = Recipe.sequelize.models.UserRecipe;
-    return new Promise(function(resolve, reject) {
-      Recipe.findAll({
-        include: {
-            model: UserRecipe,
-            where: { 'UserId': id },
-            attributes: []
-          },
-        order: [order],
-        attributes: { exclude: ['createdAt', 'updatedAt'] }
-      })
-      .then(recipes =>{
-        if (recipes.length == 0) {
-          response.statusMessage(res, 404, 'No recipes saved')
-        }
-        else {
-          response.statusObject(res, 200, recipes)
-        }
-      })
-      .catch(error => {
-        response.statusMessage(res, 400, error)
-      });
+    Recipe.findAll({
+      include: {
+          model: UserRecipe,
+          where: { 'UserId': id },
+          attributes: []
+        },
+      order: [order],
+      attributes: { exclude: ['createdAt', 'updatedAt'] }
     })
+    .then(recipes =>{
+      if (recipes.length == 0) {
+        response.statusMessage(res, 404, 'No recipes saved')
+      }
+      else {
+        response.statusObject(res, 200, recipes)
+      }
+    })
+    .catch(error => {
+      response.statusMessage(res, 400, error)
+    });
   }
 
   Recipe.getRecipe = function(dishType, search, res){

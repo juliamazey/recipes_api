@@ -33,28 +33,12 @@ const create = (req, res) => {
 const destroy = (req, res) => {
   User.findUserApiKey(req.body.apiKey)
   .then(user => {
-    UserRecipe.destroy({
-      where: {
-        UserId: user.id,
-        RecipeId: req.params.id
-      }
-    })
-    .then(recipe => {
-      if (recipe === 0) {
-        response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`)
-      }
-      else {
-        response.status204(res)
-      }
-    })
-    .catch(error => {
-      response.statusMessage(res, 404, 'No recipe found')
-    });
+    UserRecipe.deleteById(user.id, req.params.id, req, res)
   })
   .catch(error => {
     response.statusMessage(res, 401, 'Invalid API key')
   });
-}
+};
 
 // GET sorted recipes
 const index = (req, res) => {

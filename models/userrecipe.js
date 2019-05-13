@@ -27,5 +27,24 @@ module.exports = (sequelize, DataTypes) => {
     });
   }
 
+  UserRecipe.deleteById = function(UserId, RecipeId, req, res){
+    UserRecipe.destroy({
+      where: {
+        UserId: UserId,
+        RecipeId: RecipeId
+      }
+    })
+    .then(recipe => {
+      if (recipe === 0) {
+        response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`)
+      }
+      else {
+        response.status204(res)
+      }
+    })
+    .catch(error => {
+      response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`)
+    });
+  }
   return UserRecipe;
 };

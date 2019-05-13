@@ -1,8 +1,9 @@
 const bcrypt = require('bcrypt');
-const invalid_message = 'Invalid username or password'
+const invalidMessage = 'Invalid username or password'
+const invalidKey = 'Invalid API key'
 const SendResponse = require('../pojos/responses');
 const response = new SendResponse
-const mail_taken = 'Email has been taken'
+const mailTaken = 'Email has been taken'
 const uuidv4 = require('uuid/v4')
 
 
@@ -20,44 +21,35 @@ module.exports = (sequelize, DataTypes) => {
 
   User.findUserEmail = function(email){
     return new Promise(function(resolve, reject) {
-      User.findOne({
-        where: { email: email }
-      })
+      User.findOne({ where: { email: email } })
     .then(user =>{ resolve(user) })
-    .catch((error) => { reject(invalid_message)} )
+    .catch((error) => { reject(invalidMessage)} )
     })
   };
 
   User.findUserApiKey = function(apiKey){
     return new Promise(function(resolve, reject) {
-      User.findOne({
-        where: { apiKey: apiKey }
-      })
+      User.findOne({ where: { apiKey: apiKey } })
     .then(user =>{
-      if (user == null) {
-        response.statusMessage(res, 401, 'Invalid API key')
-      }
-      else {
-        resolve(user)
-      }
+      user === null ? response.statusMessage(res, 401, invalidKey) : resolve(user)
     })
-    .catch((error) => { reject(invalid_message)} )
+    .catch((error) => { reject(invalidMessage)} )
     })
   };
 
   User.prototype.checkPassword = function(password){
     return bcrypt.compareSync(password, this.password);
   };
-
+  
   User.login = function(email, password, res) {
     if (email && password) {
       return new Promise(function(resolve, reject) {
         User.findUserEmail(email)
         .then(user => {
-          user.checkPassword(password) ? resolve(user) : reject(response.statusMessage(res, 401, invalid_message));
+          user.checkPassword(password) ? resolve(user) : reject(response.statusMessage(res, 401, invalidMessage));
         })
         .catch(error => {
-          response.statusMessage(res, 401, invalid_message);
+          response.statusMessage(res, 401, invalidMessage);
         });
       });
     }
@@ -84,7 +76,7 @@ module.exports = (sequelize, DataTypes) => {
       else {
         return User.findUserEmail(email)
         .then(user => {
-          user ? reject(mail_taken) : resolve(User.creation(password, res, email));
+          user ? reject(mailTaken) : resolve(User.creation(password, res, email));
         })
         .catch(error => {
           response.statusMessage(res, 401, 'You need to send a password and email');

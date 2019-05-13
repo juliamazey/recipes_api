@@ -8,11 +8,11 @@ pry = require('pryjs');
 const create = (req, res) => {
   User.login(req.body.email, req.body.password, res)
   .then(user => {
-    response.statusKey(res, 200, user.apiKey)
+    response.statusKey(res, 200, user.apiKey);
   })
   .catch(error => {
-    response.statusMessage(res, 401, "Invalid username or password")
-  })
+    response.statusMessage(res, 401, "Invalid username or password");
+  });
 };
 
 

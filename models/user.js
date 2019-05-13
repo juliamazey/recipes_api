@@ -46,23 +46,23 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   User.prototype.checkPassword = function(password){
-    return bcrypt.compareSync(password, this.password)
-  }
+    return bcrypt.compareSync(password, this.password);
+  };
 
   User.login = function(email, password, res) {
     if (email && password) {
       return new Promise(function(resolve, reject) {
         User.findUserEmail(email)
         .then(user => {
-          user.checkPassword(password) ? resolve(user) : reject(response.statusMessage(res, 401, invalid_message))
+          user.checkPassword(password) ? resolve(user) : reject(response.statusMessage(res, 401, invalid_message));
         })
         .catch(error => {
-          response.statusMessage(res, 401, invalid_message)
-        })
-      })
+          response.statusMessage(res, 401, invalid_message);
+        });
+      });
     }
     else {
-      response.statusMessage(res, 401, 'You need to send a password and email')
+      response.statusMessage(res, 401, 'You need to send a password and email');
     }
   }
 
@@ -86,16 +86,16 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   User.registration = function(password, password_confirmation, res, email){
-    checkSamePasswords(password, password_confirmation, res)
+    checkSamePasswords(password, password_confirmation, res);
     return new Promise(function(resolve, reject){
       User.findUserEmail(email)
       .then(user => {
-        user ? reject(mail_taken) : resolve(User.creation(password, res, email))
+        user ? reject(mail_taken) : resolve(User.creation(password, res, email));
       })
       .catch(error => {
-        response.statusMessage(res, 401, "You need to send a password and email")
-      })
-    })
-  }
+        response.statusMessage(res, 401, "You need to send a password and email");
+      });
+    });
+  };
   return User;
 };

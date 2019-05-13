@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     RecipeId: DataTypes.INTEGER
   }, {});
   UserRecipe.associate = function(models) {
-    UserRecipe.belongsTo(models.User)
-    UserRecipe.belongsTo(models.Recipe)
+    UserRecipe.belongsTo(models.User);
+    UserRecipe.belongsTo(models.Recipe);
   };
 
   UserRecipe.saveById = function(UserId, RecipeId, res){
@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes) => {
       }
     })
     .then(userRecipe => {
-      response.statusMessage(res, 201, 'Recipe has been saved!')
+      response.statusMessage(res, 201, 'Recipe has been saved!');
     })
     .catch(error => {
-      response.statusMessage(res, 400, 'Recipe could not be saved')
+      response.statusMessage(res, 400, 'Recipe could not be saved');
     });
   }
 
@@ -36,15 +36,15 @@ module.exports = (sequelize, DataTypes) => {
     })
     .then(recipe => {
       if (recipe === 0) {
-        response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`)
+        response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`);
       }
       else {
-        response.status204(res)
+        response.status204(res);
       }
     })
     .catch(error => {
-      response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`)
+      response.statusMessage(res, 404, `No recipe found with id ${req.params.id}`);
     });
-  }
+  };
   return UserRecipe;
 };

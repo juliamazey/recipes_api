@@ -1,10 +1,9 @@
 pry = require('pryjs')
 
 class SendResponse {
-
   statusKey(res, status, apiKey) {
     res.setHeader("Content-Type", "application/json");
-    res.status(status).send(JSON.stringify({ apiKey: apiKey }))
+    res.status(status).send(JSON.stringify({ apiKey: apiKey }));
   }
 
   statusObject(res, status, object) {
@@ -18,10 +17,8 @@ class SendResponse {
 
   statusMessage(res, status, message) {
     res.setHeader("Content-Type", "application/json");
-    res.status(status).send(JSON.stringify({message: message}))
+    res.status(status).send(JSON.stringify({message: message}));
   }
-
 }
-
 
 module.exports = SendResponse;

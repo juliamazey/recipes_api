@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const recipesController = require('../../../controllers/recipes_controller')
+const recipesController = require('../../../controllers/recipes_controller');
 
 // GET recipe by dish type
 router.get('/', recipesController.show);

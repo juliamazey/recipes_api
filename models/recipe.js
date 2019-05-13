@@ -35,16 +35,16 @@ module.exports = (sequelize, DataTypes) => {
     })
     .then(recipes =>{
       if (recipes.length == 0) {
-        response.statusMessage(res, 404, 'No recipes saved')
+        response.statusMessage(res, 404, 'No recipes saved');
       }
       else {
-        response.statusObject(res, 200, recipes)
+        response.statusObject(res, 200, recipes);
       }
     })
     .catch(error => {
-      response.statusMessage(res, 400, error)
+      response.statusMessage(res, 400, error);
     });
-  }
+  };
 
   Recipe.getRecipe = function(dishType, search, res){
     var url = `https://api.edamam.com/search?q=${search}&app_id=${process.env.app_id}&app_key=${process.env.app_key}&dish_type=${dishType}`
@@ -56,20 +56,20 @@ module.exports = (sequelize, DataTypes) => {
       if(fetched_recipe.count > 0){
         createRecipe(fetched_recipe)
         .then(recipe => {
-          response.statusObject(res, 200, recipe)
+          response.statusObject(res, 200, recipe);
         })
         .catch(error => {
-          response.statusMessage(res, 400,  error)
-        })
+          response.statusMessage(res, 400,  error);
+        });
       }
       else {
-        response.statusMessage(res, 404, "Sorry, we could not find a recipe")
+        response.statusMessage(res, 404, "Sorry, we could not find a recipe");
       }
     })
     .catch(error => {
-      response.statusMessage(res, 400,  error)
-    })
-  }
+      response.statusMessage(res, 400,  error);
+    });
+  };
 
   function createRecipe(recipe) {
     return new Promise(function(resolve,reject) {

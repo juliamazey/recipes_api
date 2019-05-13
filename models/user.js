@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
   User.prototype.checkPassword = function(password){
     return bcrypt.compareSync(password, this.password);
   };
-  
+
   User.login = function(email, password, res) {
     if (email && password) {
       return new Promise(function(resolve, reject) {

@@ -26,18 +26,7 @@ const create = (req, res) => {
       response.statusMessage(res, 401, "Invalid API key")
     }
     else {
-      UserRecipe.findOrCreate({
-        where: {
-          UserId: user.id,
-          RecipeId: parseInt(req.params.id)
-        }
-      })
-      .then(userRecipe => {
-        response.statusMessage(res, 201, 'Recipe has been saved!')
-      })
-      .catch(error => {
-        response.statusMessage(res, 400, 'Recipe could not be saved')
-      });
+      UserRecipe.saveById(user.id, req.params.id, res)
     }
   })
   .catch(error => {
@@ -79,7 +68,7 @@ const destroy = (req, res) => {
 
 // GET sorted recipes
 const index = (req, res) => {
-  User.findUserApiKey('apiKey', req.body.apiKey)
+  User.findUserApiKey(req.body.apiKey)
   .then(user => {
     if (user == null) {
       response.statusMessage(res, 401, 'Invalid API key')

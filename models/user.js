@@ -88,10 +88,7 @@ module.exports = (sequelize, DataTypes) => {
       .catch(error => {
         response.statusMessage(res, 401, "You need to send a password and email")
       })
-
     })
   }
-
-
   return User;
 };

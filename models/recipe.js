@@ -43,7 +43,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
       .catch(error => {
-        eval(pry.it)
         response.statusMessage(res, 400, error)
       });
     })

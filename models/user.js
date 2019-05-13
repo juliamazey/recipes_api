@@ -18,13 +18,23 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsToMany(models.Recipe, {through: models.UserRecipe});
   };
 
-  User.findUser = function(email){
+  User.findUserEmail = function(email){
     return new Promise(function(resolve, reject) {
       User.findOne({
         where: { email: email }
       })
-      .then(user =>{ resolve(user) })
-      .catch((error) => { reject(invalid_message)} )
+    .then(user =>{ resolve(user) })
+    .catch((error) => { reject(invalid_message)} )
+    })
+  };
+
+  User.findUserApiKey = function(apiKey){
+    return new Promise(function(resolve, reject) {
+      User.findOne({
+        where: { apiKey: apiKey }
+      })
+    .then(user =>{ resolve(user) })
+    .catch((error) => { reject(invalid_message)} )
     })
   };
 
@@ -35,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
   User.login = function(email, password, res) {
     if (email && password) {
       return new Promise(function(resolve, reject) {
-        User.findUser(email)
+        User.findUserEmail(email)
         .then(user => {
           user.checkPassword(password) ? resolve(user) : reject(response.statusMessage(res, 401, invalid_message))
         })
@@ -71,7 +81,7 @@ module.exports = (sequelize, DataTypes) => {
   User.registration = function(password, password_confirmation, res, email){
     checkSamePasswords(password, password_confirmation, res)
     return new Promise(function(resolve, reject){
-      User.findUser(email)
+      User.findUserEmail(email)
       .then(user => {
         user ? reject(mail_taken) : resolve(User.creation(password, res, email))
       })

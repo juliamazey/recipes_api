@@ -20,9 +20,7 @@ const show = (req, res) => {
 
 // POST to save recipe by id
 const create = (req, res) => {
-  User.findOne({
-    where: { apiKey: req.body.apiKey }
-  })
+  User.findUserApiKey(req.body.apiKey)
   .then(user => {
     if (user == null) {
       response.statusMessage(res, 401, "Invalid API key")
@@ -49,9 +47,7 @@ const create = (req, res) => {
 
 // DELETE recipe by id
 const destroy = (req, res) => {
-  User.findOne({
-    where: { apiKey: req.body.apiKey }
-  })
+  User.findUserApiKey(req.body.apiKey)
   .then(user => {
     if (user == null) {
       response.statusMessage(res, 401, 'Invalid API key')
@@ -83,9 +79,7 @@ const destroy = (req, res) => {
 
 // GET sorted recipes
 const index = (req, res) => {
-  User.findOne({
-    where: { apiKey: req.body.apiKey }
-  })
+  User.findUserApiKey('apiKey', req.body.apiKey)
   .then(user => {
     if (user == null) {
       response.statusMessage(res, 401, 'Invalid API key')

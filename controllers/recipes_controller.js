@@ -33,7 +33,7 @@ const create = (req, res) => {
 const destroy = (req, res) => {
   User.findUserApiKey(req.body.apiKey)
   .then(user => {
-    UserRecipe.deleteById(user.id, req.params.id, req, res);
+    UserRecipe.deleteById(user.id, req.params.id, res);
   })
   .catch(error => {
     response.statusMessage(res, 401, 'Invalid API key');

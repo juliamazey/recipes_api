@@ -23,28 +23,32 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Recipe.sortBy = function(order, id, res){
-    const UserRecipe = Recipe.sequelize.models.UserRecipe;
-    Recipe.findAll({
-      include: {
-          model: UserRecipe,
-          where: { 'UserId': id },
-          attributes: []
-        },
-      order: [order],
-      attributes: { exclude: ['createdAt', 'updatedAt'] }
-    })
+    const userRecipe = Recipe.sequelize.models.UserRecipe;
+    var no_rec = 'No recipes saved'
+    findRecipes(userRecipe, id, order)
     .then(recipes =>{
-      if (recipes.length == 0) {
-        response.statusMessage(res, 404, 'No recipes saved');
-      }
-      else {
-        response.statusObject(res, 200, recipes);
-      }
+      recipes.length == 0 ? response.statusMessage(res, 404, no_rec) : response.statusObject(res, 200, recipes);
     })
     .catch(error => {
       response.statusMessage(res, 400, error);
     });
   };
+
+  function findRecipes(userRecipe, id, order){
+    return new Promise(function(resolve, reject) {
+      Recipe.findAll({
+        include: {
+            model: userRecipe,
+            where: { 'UserId': id },
+            attributes: []
+          },
+        order: [order],
+        attributes: { exclude: ['createdAt', 'updatedAt'] }
+      })
+      .then(rec =>{resolve(rec)})
+      .catch(error => {reject(error)})
+    })
+  }
 
   Recipe.getRecipe = function(dishType, search, res){
     var url = `https://api.edamam.com/search?q=${search}&app_id=${process.env.app_id}&app_key=${process.env.app_key}&dish_type=${dishType}`
